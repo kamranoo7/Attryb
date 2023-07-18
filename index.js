@@ -1,11 +1,14 @@
 let express=require("express")
 const { connection } = require("./db")
 const { userRouter } = require("./Route/user.routes")
+const { carRouter } = require("./Route/car.routes")
+const { auth } = require("./Middleware/auth.middleware")
 let app=express()
 require("dotenv").config()
 app.use(express.json())
 app.use("/users",userRouter)
-
+app.use(auth)
+app.use("/car",carRouter)
 
 
 //Server connection
