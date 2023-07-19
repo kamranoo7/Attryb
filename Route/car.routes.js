@@ -6,8 +6,8 @@ let carRouter=express.Router()
 //Post
 carRouter.post("/add",async(req,res)=>{
     try{
-let book=new CarModel(req.body)
-await book.save()
+let car=new CarModel(req.body)
+await car.save()
 res.status(200).json({msg:"car added","addedCar":req.body})
     }catch(err){
 res.status(400).json({error:err.message})
@@ -16,11 +16,11 @@ res.status(400).json({error:err.message})
 
 //Get
 carRouter.get("/",async(req,res)=>{
-    let {query}=req.query
+    
     try{
-        let book=await CarModel.find(query)
-        res.send(book)
-        res.status(200).json({msg:"All the car present in the database"})
+        let car=await CarModel.find()
+        res.send(car)
+       
     }catch(err){
         res.status(400).json({error:err.message})
     }
@@ -29,17 +29,14 @@ carRouter.get("/",async(req,res)=>{
 
 //Update
 carRouter.patch("/update/:postID",async(req,res)=>{
+    
     let {postID}=req.params
-    let post=await CarModel.findOne({_id:postID})
+    let payload=req.body
     try{
-        if(req.body.authorID!==post.authorID){
-            res.status(200).send({"msg":"You are not Authorised"})
-        }else{
-            await CarModel.findByIdAndUpdate({_id:postID},req.body)
-            res.status(200).send({"msg":"The post has been updated"})
-        }
+        await CarModel.findByIdAndUpdate({_id:postID},payload)
+        res.status(200).json({msg:"Car has been updated"})
     }catch(err){
-        res.status(400).send({"msg":err.message})
+        res.status(400).json({error:err.message})
     }
     })
     //delete
@@ -50,7 +47,7 @@ carRouter.patch("/update/:postID",async(req,res)=>{
             if(req.body.authorID!==post.authorID){
                 res.status(200).send({"msg":"You are not Authorised"})
             }else{
-                await CarModel.findByIdAndDelete({_id:postID},req.body)
+                await CarModel.findByIdAndDelete({_id:postID})
                 res.status(200).send({"msg":"The post has been deleted"})
             }
         }catch(err){
